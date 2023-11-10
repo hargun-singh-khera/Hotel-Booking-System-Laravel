@@ -16,7 +16,7 @@
             <div class="col">
                 <div class="card shadow-lg p-4 mb-5 border-0 rounded" >
                     <div class="col my-auto">
-                        <img src="./images/logo.png" class="img-fluid mx-auto d-block" alt="image" width="60" height="60" />
+                        <img src="/images/logo.png" class="img-fluid mx-auto d-block" alt="image" width="60" height="60" />
                         <div class="card-body">
                         <h5 style="font-size:30px; font-family:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif'" class="card-title mb-3">Create an Account</h5>
                         <form class="w-auto m-auto" action="{{url('/')}}/signup" method="POST">

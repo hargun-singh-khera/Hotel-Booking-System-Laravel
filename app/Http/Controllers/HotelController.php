@@ -16,9 +16,9 @@ class HotelController extends Controller
                     ->join('room_masters', 'room_masters.room_id', '=', 'hotel_room_alloteds.room_id')
                     // ->select('hotel_masters.name', 'hotel_masters.image', 'location_masters.location', 'room_masters.room_type' ,'hotel_room_alloteds.no_of_rooms', 'hotel_room_alloteds.no_of_guests', 'hotel_room_alloteds.rate_per_night', 'hotel_room_alloteds.room_image')
                     ->get();
-        $data = compact("hotels");
-        return view('home')->with($data);
-        // return $hotels;
+        // $data = compact("hotels");
+        // return view('home')->with($data);
+        return $hotels;
     }
 
     public function hotels($id) {
@@ -40,10 +40,21 @@ class HotelController extends Controller
                     ->join('location_masters', 'hotel_masters.location_id', '=', 'location_masters.location_id')
                     ->join('room_masters', 'room_masters.room_id', '=', 'hotel_room_alloteds.room_id')
                     ->where('hotel_room_alloteds.hotel_id', '=', $hotelId)
-                    ->where('hotel_room_alloteds.room_id', '=', $roomId) // Add the additional condition here
+                    ->where('hotel_room_alloteds.room_id', '=', $roomId) 
                     ->get();
-        $data = compact("hotels");
+        // return $hotels;
+        $data = compact("hotels", "hotelId", "roomId");
         return view('booking')->with($data);
         // return $hotels;
+    }
+
+    public function bookingMessage(Request $request) {
+        $request->validate(
+            [
+                'name' => 'required',
+                'email' => 'required | email',
+                'number' => 'required'
+            ]
+        );
     }
 }

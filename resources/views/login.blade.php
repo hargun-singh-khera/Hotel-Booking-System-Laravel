@@ -18,17 +18,30 @@
                         <img src="images/logo.png" class="img-fluid  mx-auto d-block" alt="image" width="60" height="20" />
                         <div class="card-body">
                         <h5 style="font-size:30px; margin-bottom:0px; font-family:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif'" class="card-title mt-2" >Hello! Welcome Back</h5>
+                        {{-- <h5 style="font-size:30px; margin-bottom:0px; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;" class="card-title mt-2">Hello! Welcome Back</h5> --}}
+
                         <small class="text-body-secondary">Log in with your data that you entered during your registration.</small>
         
                         <form class="w-auto m-auto mt-3" action="{{url('/')}}/login" method="POST">
+                            @csrf
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email address" required/>
+                                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email address" value="{{old('email')}}"/>
+                                <span class="text-danger">
+                                    @error('email')
+                                        {{$message}}
+                                    @enderror
+                                </span>
                                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required/>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password"/>
+                                <span class="text-danger">
+                                    @error('password')
+                                        {{$message}}
+                                    @enderror
+                                </span>
                             </div>
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1"/>

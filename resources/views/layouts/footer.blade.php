@@ -3,7 +3,7 @@
         <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
             <div class="col mb-3">
                 <a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none">
-                    <img src="images/logo.png" alt="" width="40" height="40" /> 
+                    <img src="{{url('/')}}/images/logo.png" alt="" width="40" height="40" /> 
                     <h4 class="mt-2">Heritage</h4>
                 </a>
                 <p class="text-body-secondary">Heritage © 2023-2024</p>
