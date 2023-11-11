@@ -12,12 +12,6 @@ use App\Models\HotelRoomAlloted;
 
 class AdminController extends Controller
 {
-    public function showUsers() {
-        $customers = User::all();
-        $data = compact('customers');
-        return view('admin.user_master')->with($data);
-    }
-
     public function addRoom(Request $request) {
         $request->validate(
             [
@@ -164,7 +158,6 @@ class AdminController extends Controller
         return view('admin.location_master')->with($data);
     }
 
-    
     public function addHotels(Request $request) {
         $file = $request->file('image')->getClientOriginalName();
         $hotel = new HotelMaster;
@@ -176,21 +169,91 @@ class AdminController extends Controller
     }
 
     public function showHotels() {
-        $hotels = HotelMaster::all();
         $locations = LocationMaster::all();
+        $hotels = DB::table('hotel_masters')
+                    ->join('location_masters', 'hotel_masters.location_id', 'location_masters.location_id')
+                    ->get();
+        $locations = LocationMaster::all();
+        $url = url('/admin/hotel_master');
+        $title = "Add Entry";
+        $isUpdate = false;
+        $showAlert = false;
+        $data = compact('hotels', 'title', 'showAlert', 'url', 'isUpdate', 'locations');
         // return $data;
-        $data = compact('locations', 'hotels');
 
         return view('admin.hotel_master')->with($data);
     }
+
+    public function editHotel(Request $request, $id) {
+        $hotel = DB::table('hotel_masters')
+                    ->join('location_masters', 'hotel_masters.location_id', 'location_masters.location_id')
+                    ->where('hotel_masters.hotel_id','=',$id)
+                    ->get();
+                    
+        $hotels = DB::table('hotel_masters')
+                    ->join('location_masters', 'hotel_masters.location_id', 'location_masters.location_id')
+                    ->get();
+
+        $locations = LocationMaster::where('location_id','!=',$hotel[0]->location_id)->get();
+        $title = "Save Entry";
+        $isUpdate = false;
+        $showAlert = false;
+        if(is_null($hotel)) {
+            return redirect('admin.hotel_master');
+        }
+        else {
+            if ($request->has('update')) {
+                $isUpdate = true;
+            }
+            $url = url('/admin/hotel_master/update') ."/".$id;
+            $data = compact('hotels', 'title', 'showAlert', 'hotel', 'url', 'isUpdate', 'locations');
+            // return $data;
+            return view('admin.hotel_master')->with($data);
+        }
+    }
+
+    public function updateHotel(Request $request, $id) {
+        $hotel = HotelMaster::find($id);
+        $hotel->name = $request['hotelname'];
+        $hotel->location_id = $request['location'];
+        $title = "Add Entry";
+        $isUpdate = false;
+        $showAlert = false;
+        $hotel->save();
+        $hotel = DB::table('hotel_masters')
+                    ->join('location_masters', 'hotel_masters.location_id', 'location_masters.location_id')
+                    ->where('hotel_masters.hotel_id','=',$id)
+                    ->get();
+        $hotels = DB::table('hotel_masters')
+                    ->join('location_masters', 'hotel_masters.location_id', 'location_masters.location_id')
+                    ->get();
+        $locations = LocationMaster::all();
+        $url = url('/admin/hotel_master/update') ."/".$id;
+        
+        $data = compact('hotels', 'title', 'showAlert', 'hotel', 'url', 'isUpdate', 'locations');
+        return redirect(route('admin.hotel_master'))->with($data);
+    }
+
+    public function deleteHotel($id) {
+        // return $id;
+        $hotel = HotelMaster::find($id);
+        if(!is_null($hotel)) {
+            $hotel->delete();
+        }
+        return redirect()->back();
+    }
     
     public function showRoomAllotToHotels() {
-        $hotels = HotelMaster::all();
+        $roomToHotels = DB::table('hotel_room_alloteds')
+                    ->join('hotel_masters', 'hotel_room_alloteds.hotel_id', 'hotel_masters.hotel_id')
+                    ->join('location_masters', 'location_masters.location_id', 'hotel_masters.hotel_id')
+                    ->join('room_masters', 'room_masters.room_id', 'hotel_room_alloteds.room_id')
+                    ->get();
         $rooms = RoomMaster::all();
-        $data = compact('hotels', 'rooms');
+        $hotels = HotelMaster::all();
+        $data = compact('roomToHotels', 'hotels' ,'rooms');
+        // return $data;
         return view('admin.room_allot')->with($data);
-        
-
     }
 
     public function roomAllotToHotel(Request $request) {
@@ -211,4 +274,19 @@ class AdminController extends Controller
         $data = compact('hotels');
         return view('admin.room_allot')->with($data);
     }
+
+    public function deleteUser($id) {
+        $user = User::find($id);
+        if(!is_null($user)) {
+            $user->delete();
+        }
+        return redirect()->back();
+    }
+
+    public function showUsers() {
+        $customers = User::all();
+        $data = compact('customers');
+        return view('admin.user_master')->with($data);
+    }
+
 }

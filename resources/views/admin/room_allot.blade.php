@@ -11,26 +11,27 @@
                     <form id="myForm" action="{{url('/')}}/admin/room_allot" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <form id="myForm2" action="{{url('/')}}/admin/room_allot/show" method="POST">
+                            <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
+                            <form id="myForm2" action="{{url('/')}}/admin/room_allot/show/{id}" method="POST">
                                 @csrf
-                                <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
                                 <select class="form-select mb-2" id="hotelname" name="hotelname" aria-label="Default select example">
                                     <option selected>Choose from Hotel Names</option>
                                     @foreach ($hotels as $hotel)
+
                                         <option value="{{$hotel->hotel_id}}">{{$hotel->name}}</option>
-                                    @endforeach
+                                        @endforeach
                                 </select>
                             </form>
                             
-                            {{-- <script>
-                                var dropdown = document.getElementById("hotelname");
-                                var myForm = document.getElementById("myForm");
+                            <script>
+                                // var dropdown = document.getElementById("hotelname");
+                                var myForm = document.getElementById("myForm2");
                                 dropdown.addEventListener("change", function() {
                                     alert("Hello!");
                                     myForm.submit();
                                     alert("Submitted!");
                                 });
-                            </script> --}}
+                            </script>
                             
                         <hr />
                         
@@ -56,6 +57,51 @@
                         </div>
                     </div>
                     </form>
+                    @if (count($hotels) > 0)
+                        <hr />
+                        {{-- {{print_r($hotels->toArray())}} --}}
+                        <h4>Rooms Alloted to Hotels</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S.No.</th>
+                                    <th scope="col">Room Type</th>
+                                    <th scope="col">No of Rooms </th>
+                                    <th scope="col">No of Guests</th>
+                                    <th scope="col">Rate per Night</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                @php
+                                    $i = 1;
+                                @endphp
+                                @foreach ($roomToHotels as $roomToHotel)
+                                    <tr>
+                                        <th scope="row">{{$i}}</th>
+                                        <td>{{$roomToHotel->room_type}}</td>
+                                        <td>{{$roomToHotel->no_of_rooms}}</td>
+                                        <td>{{$roomToHotel->no_of_guests}}</td>
+                                        <td>{{$roomToHotel->rate_per_night}}</td>
+                                        <form action="{{ route('admin.room_allot_edit', ['id' => $roomToHotel->hotel_id]) }}">
+                                            <td>
+                                                <button class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="update" id="update">Update</button>
+                                            </td>
+                                            </form>
+                                            <form action="{{route('admin.room_allot_delete', ['id' => $roomToHotel->hotel_id])}}">
+                                            <td>
+                                                <button class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="delete" id="delete">Delete</button>
+                                            </td>
+                                    </tr>   
+                                    @php
+                                        $i++;
+                                    @endphp 
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>

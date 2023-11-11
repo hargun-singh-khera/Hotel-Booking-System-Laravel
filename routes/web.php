@@ -71,7 +71,10 @@ Route::get('/admin', function () {
 
 Route::get('/admin/room_allot', [AdminController::class, 'showRoomAllotToHotels']);
 Route::post('/admin/room_allot', [AdminController::class, 'roomAllotToHotel']);
-Route::any('/admin/room_allot/show', [AdminController::class, 'showRoomAllotToHotel']);
+Route::any('/admin/room_allot/show/{id}', [AdminController::class, 'showRoomAllotToHotel'])->name('admin.room_allot_show');
+Route::get('/admin/room_allot/edit/{id}', [AdminController::class,'editHotel'])->name('admin.room_allot_edit');
+Route::post('/admin/room_allot/update/{id}', [AdminController::class,'updateHotel'])->name('admin.room_allot_update');
+Route::get('/admin/room_allot/delete/{id}', [AdminController::class,'deleteHotel'])->name('admin.room_allot_delete');
 
 Route::get('/admin/room_master', [AdminController::class,'showRooms'])->name('admin.room_master');
 Route::post('/admin/room_master', [AdminController::class, 'addRoom']);
@@ -86,7 +89,7 @@ Route::get('/admin/location_master/delete/{id}', [AdminController::class,'delete
 Route::post('/admin/location_master', [AdminController::class, 'addLocation']);
 
 Route::get('/admin/user_master', [AdminController::class, 'showUsers']);
-Route::get('/admin/user_master/delete/{id}', [RegistrationController::class, 'delete']);
+Route::get('/admin/user_master/delete/{id}', [AdminController::class, 'deleteUser'])->name('admin.delete_user');
 
 
 

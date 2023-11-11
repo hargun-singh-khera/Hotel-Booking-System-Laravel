@@ -8,33 +8,42 @@
             <div class="col-md-10 ">
                 <div class="card shadow p-5 border-0 rounded me-5">
                     <h2 >Manage Users</h2>
-                    <hr />
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">S.No.</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $id = 1;
-                            @endphp
-                            @foreach ($customers as $customer)
+                    @if (count($customers) > 0)
+                        <hr />
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>{{$id}}</td>
-                                    <td>{{$customer->name}}</td>
-                                    <td>{{$customer->email}}</td>
-                                    <td><a href={{"user_master/delete/"}}{{$customer->customer_id}}><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form_delete">Delete</button></a></td>
-                                    @php
-                                        $id++;
-                                    @endphp
+                                    <th scope="col">S.No.</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Action</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $id = 1;
+                                @endphp
+                                @foreach ($customers as $customer)
+                                    <tr>
+                                        <td>{{$id}}</td>
+                                        <td>{{$customer->name}}</td>
+                                        <td>{{$customer->email}}</td>
+                                        <form action="{{ route('admin.delete_user', ['id' => $customer->id]) }}">
+                                            <td>
+                                                <button class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="delete" id="delete">Delete</button>
+                                            </td>
+                                            </form>
+                                        @php
+                                            $id++;
+                                        @endphp
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <hr />
+                        <h3 class="text-center mt-5">No User Record Found</h3>
+                    @endif
                 </div>
             </div>
         </div>
