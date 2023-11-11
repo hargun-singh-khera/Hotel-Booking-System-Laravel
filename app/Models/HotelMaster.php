@@ -12,4 +12,6 @@ class HotelMaster extends Model
     // public function locations() {
     //     return $this->hasMany('App\Models\LocationMaster', 'location_id', 'location_id');
     // }
+    public $timestamps = false;
+
 }

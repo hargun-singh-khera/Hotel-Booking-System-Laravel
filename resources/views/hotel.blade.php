@@ -57,7 +57,7 @@
     <div class="container">
         <h4>Rooms Available</h4>
         <div id="select_room" class="row">
-            @foreach ($hotels as $room)
+            @foreach ($rooms as $room)
                 <div class="col-md-4 mt-4">
                     <div class="card mb-5 shadow border-0" style="width: 25rem; border-radius:12px;">
                     <img src="/images/RoomImages/{{$room->room_image}}" class="card-img-top" alt="..." height="230px" style="border-top-left-radius:12px; border-top-right-radius:12px;">

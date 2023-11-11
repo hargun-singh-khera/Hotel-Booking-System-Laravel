@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('location_id');
             $table->foreign('location_id')->references('location_id')->on('location_masters');
             $table->string('name', 100)->unique();
-            $table->string('image', 20)->unique();
+            $table->string('image')->unique();
             // $table->timestamps();
         });
     }

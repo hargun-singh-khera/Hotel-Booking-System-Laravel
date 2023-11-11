@@ -8,10 +8,21 @@
   </head>
   <body>
     
+    {{-- <main class="d-flex flex-nowrap"> 
+      @include('admin.nav')
+      <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary ms-2" style="width:76em;">
+        
+      </div>
+    </main> --}}
+    
     <main class="d-flex flex-nowrap"> 
-        @include('admin.nav')
+      @include('admin.nav')
+      <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary ms-2" style="width:76em;">
+        
         @yield('main-section')
-      </main>
+      </div>
+  </main>
+  
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   </body>

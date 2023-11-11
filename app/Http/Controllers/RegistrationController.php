@@ -31,4 +31,6 @@ class RegistrationController extends Controller
         $customer->save();
         return redirect('login');
     }
+
+    
 }

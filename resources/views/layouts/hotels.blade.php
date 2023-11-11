@@ -38,6 +38,7 @@
                                 </div>
                                 <div class="col text-end m-auto">
                                     <h5 class="mb-1" style="color:#ff6537ff;"><b>₹ {{$hotel->rate_per_night}}</b></h5>
+                                    {{-- <h5 class="mb-1" style="color:#ff6537ff;"><b>₹ </b></h5> --}}
                                     <small class="text-body-secondary m-auto"><strong>1 room</strong> per night</small>
                                 </div>
                                 <div class="w-100 mt-3 pb-3">

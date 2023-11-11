@@ -6,7 +6,8 @@
             <div class="col-md-10 ">
                 <div class="card shadow p-5 border-0 rounded me-5">
                     <h2 >Manage Hotels</h2>
-                    <form action="/HotelBookingSystem/admin/hotel_master.php" method="POST" enctype="multipart/form-data">
+                    <form action="{{url('/')}}/admin/hotel_master" method="POST" enctype="multipart/form-data">
+                        @csrf
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
                             <input type="text" class="form-control" id="hotelname" name="hotelname" required/>
@@ -16,8 +17,14 @@
                             </div>
                             <label for="exampleInputPassword1" class="form-label">Hotel Location</label>
                             <select class="form-select" aria-label="Default select example" id="location" name="location">
-                                
+                                <option selected>Choose from Locations</option>
+                                @foreach ($locations as $location)
+                                    <option value="{{$location->location_id}}">{{$location->location}}</option>
+                                @endforeach
                             </select>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary w-100" name="form4_update" style="background-color: #ff6537ff; border:none;">Add Entry</button>
+                            </div>
                         </div>
                     </form>
                 </div>

@@ -15,34 +15,26 @@ class FilterController extends Controller
         $request->session()->put('checkout', $data['checkout']);
         $request->session()->put('guests', $data['guests']);
         $request->session()->put('rooms', $data['rooms']);
-        // echo "Location: " .session('locations') ."<br/>";
-        // echo "Check IN: " . session('checkin') ."<br/>";
-        // echo "Check Out: " . session('checkout') ."<br/>";
-        // echo "Guests: " . session('guests') ."<br/>";
-        // echo "Rooms: " . session('rooms') ."<br/>";
-
+        session()->put('filtered', 'true');
         $search = $request['locations'] ?? "";
-        // echo "Search query: " .$search;
         $locations = app(LocationController::class)->view();
         if($search != "" && $search != "Where to?") {
-            $hotels = DB::table('hotel_room_alloteds')
-                            ->join('hotel_masters', 'hotel_room_alloteds.hotel_id', '=', 'hotel_masters.hotel_id')
+            $hotels = DB::table('hotel_masters')
                             ->join('location_masters', 'hotel_masters.location_id', '=', 'location_masters.location_id')
-                            ->join('room_masters', 'room_masters.room_id', '=', 'hotel_room_alloteds.room_id')
+                            ->select('hotel_masters.*', 'location_masters.*', DB::raw('(SELECT MIN(rate_per_night) FROM hotel_room_alloteds WHERE hotel_id = hotel_masters.hotel_id) AS rate_per_night'))
                             ->where('location_masters.location_id', '=', $search)
                             ->get();
+                // return $hotels;
         }
         else {
-            $hotels = DB::table('hotel_room_alloteds')
-                            ->join('hotel_masters', 'hotel_room_alloteds.hotel_id', '=', 'hotel_masters.hotel_id')
-                            ->join('location_masters', 'hotel_masters.location_id', '=', 'location_masters.location_id')
-                            ->join('room_masters', 'room_masters.room_id', '=', 'hotel_room_alloteds.room_id')
-                            ->get();
+            $hotels = DB::table('hotel_masters')
+                    ->join('location_masters', 'hotel_masters.location_id', '=', 'location_masters.location_id')
+                    ->select('hotel_masters.*', 'location_masters.*', DB::raw('(SELECT MIN(rate_per_night) FROM hotel_room_alloteds WHERE hotel_id = hotel_masters.hotel_id) AS rate_per_night'))
+                    ->get();
+            // return $hotels;
         }
         $data = compact('locations','hotels');
         // return $data;
         return view('home')->with($data);
-
-        // return redirect('/');
     }
 }

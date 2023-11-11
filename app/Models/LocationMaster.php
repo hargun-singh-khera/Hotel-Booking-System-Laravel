@@ -8,5 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LocationMaster extends Model
 {
     use HasFactory;
-    // protected $primaryKey = "location_id";
+    public $timestamps = false;
+    protected $table = 'location_masters'; 
+    protected $primaryKey = 'location_id';
 }

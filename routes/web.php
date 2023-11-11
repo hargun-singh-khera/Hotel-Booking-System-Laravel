@@ -7,6 +7,7 @@ use App\Http\Controllers\HotelController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserAuth;
 use App\Http\Controllers\FilterController;
+use App\Http\Controllers\AdminController;
 use App\Models\Customer;
 
 /*
@@ -50,34 +51,42 @@ Route::group(['middleware'=>'web'], function() {
     
     Route::get('/hotel/{id}', [HotelController::class, 'hotels']);
     Route::get('/hotel/{hotelId}/room/{roomId}/booking', [HotelController::class, 'booking']);
-    // Route::get('/booking', [HotelController::class, 'booking']);
     Route::post('/hotel/{hotelId}/room/{roomId}/booking', [HotelController::class, 'bookingMessage']);
+
 });
 
-// Route::get('/admin/dashboard', function () {
-//     return view('admin/dashboard');
-// });
+Route::get('/admin/dashboard', function () {
+    return view('admin/dashboard');
+});
 
-// Route::get('/admin/hotel_master', function () {
-//     return view('admin/hotel_master');
-// });
+Route::get('/admin/hotel_master', [AdminController::class, 'showHotels'])->name('admin.hotel_master');
+Route::post('/admin/hotel_master', [AdminController::class, 'addHotels']);
+Route::get('/admin/hotel_master/edit/{id}', [AdminController::class,'editHotel'])->name('admin.hotel_edit');
+Route::post('/admin/hotel_master/update/{id}', [AdminController::class,'updateHotel'])->name('admin.hotel_update');
+Route::get('/admin/hotel_master/delete/{id}', [AdminController::class,'deleteHotel'])->name('admin.hotel_delete');
 
-// Route::get('/admin', function () {
-//     return view('admin/login');
-// });
+Route::get('/admin', function () {
+    return view('admin/login');
+});
 
-// Route::get('/admin/room_allot', function () {
-//     return view('admin/room_allot');
-// });
+Route::get('/admin/room_allot', [AdminController::class, 'showRoomAllotToHotels']);
+Route::post('/admin/room_allot', [AdminController::class, 'roomAllotToHotel']);
+Route::any('/admin/room_allot/show', [AdminController::class, 'showRoomAllotToHotel']);
 
-// Route::get('/admin/room_master', function () {
-//     return view('admin/room_master');
-// });
+Route::get('/admin/room_master', [AdminController::class,'showRooms'])->name('admin.room_master');
+Route::post('/admin/room_master', [AdminController::class, 'addRoom']);
+Route::get('/admin/room_master/edit/{id}', [AdminController::class,'editRoom'])->name('admin.room_edit');
+Route::post('/admin/room_master/update/{id}', [AdminController::class,'updateRoom'])->name('admin.room_update');
+Route::get('/admin/room_master/delete/{id}', [AdminController::class,'deleteRoom'])->name('admin.room_delete');
 
-// Route::get('/admin/user_master', [RegistrationController::class, 'view']);
-// Route::get('/admin/user_master/delete/{id}', [RegistrationController::class, 'delete']);
+Route::get('/admin/location_master', [AdminController::class,'showLocations'])->name('admin.location_master');
+Route::get('/admin/location_master/edit/{id}', [AdminController::class,'editLocation'])->name('admin.location_edit');
+Route::post('/admin/location_master/update/{id}', [AdminController::class,'updateLocation'])->name('admin.location_update');
+Route::get('/admin/location_master/delete/{id}', [AdminController::class,'deleteLocation'])->name('admin.location_delete');
+Route::post('/admin/location_master', [AdminController::class, 'addLocation']);
 
-// Route::get('/admin/location_master', function () {
-//     return view('admin/location_master');
-// });
+Route::get('/admin/user_master', [AdminController::class, 'showUsers']);
+Route::get('/admin/user_master/delete/{id}', [RegistrationController::class, 'delete']);
+
+
 
