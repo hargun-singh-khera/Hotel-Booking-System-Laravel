@@ -55,9 +55,7 @@ Route::group(['middleware'=>'web'], function() {
 
 });
 
-Route::get('/admin/dashboard', function () {
-    return view('admin/dashboard');
-});
+Route::get('/admin/dashboard', [AdminController::class, 'adminDashboard']);
 
 Route::get('/admin/hotel_master', [AdminController::class, 'showHotels'])->name('admin.hotel_master');
 Route::post('/admin/hotel_master', [AdminController::class, 'addHotels']);
@@ -65,16 +63,15 @@ Route::get('/admin/hotel_master/edit/{id}', [AdminController::class,'editHotel']
 Route::post('/admin/hotel_master/update/{id}', [AdminController::class,'updateHotel'])->name('admin.hotel_update');
 Route::get('/admin/hotel_master/delete/{id}', [AdminController::class,'deleteHotel'])->name('admin.hotel_delete');
 
-Route::get('/admin', function () {
-    return view('admin/login');
-});
+Route::get('/admin/login', [AdminController::class, 'adminLogin']);
+Route::post('/admin/login', [AdminController::class, 'adminDashboard']);
 
-Route::get('/admin/room_allot', [AdminController::class, 'showRoomAllotToHotels']);
+Route::get('/admin/room_allot', [AdminController::class, 'showRoomAllotToHotels'])->name('admin.room_allot');
 Route::post('/admin/room_allot', [AdminController::class, 'roomAllotToHotel']);
-Route::any('/admin/room_allot/show/{id}', [AdminController::class, 'showRoomAllotToHotel'])->name('admin.room_allot_show');
-Route::get('/admin/room_allot/edit/{id}', [AdminController::class,'editHotel'])->name('admin.room_allot_edit');
-Route::post('/admin/room_allot/update/{id}', [AdminController::class,'updateHotel'])->name('admin.room_allot_update');
-Route::get('/admin/room_allot/delete/{id}', [AdminController::class,'deleteHotel'])->name('admin.room_allot_delete');
+Route::any('/admin/room_allot/show', [AdminController::class, 'showRoomAllotToHotels'])->name('admin.room_allot_show');
+Route::get('/admin/room_allot/edit/{hotelId}/{roomId}}', [AdminController::class,'editRoomAllotToHotel'])->name('admin.room_allot_edit');
+Route::post('/admin/room_allot/update/{hoteld}/{roomId}', [AdminController::class,'updateRoomAllotToHotel'])->name('admin.room_allot_update');
+Route::get('/admin/room_allot/delete/{hotelId}/{roomId}', [AdminController::class,'deleteRoomAllotToHotel'])->name('admin.room_allot_delete');
 
 Route::get('/admin/room_master', [AdminController::class,'showRooms'])->name('admin.room_master');
 Route::post('/admin/room_master', [AdminController::class, 'addRoom']);

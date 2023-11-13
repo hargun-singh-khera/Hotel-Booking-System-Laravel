@@ -1,6 +1,12 @@
 @extends('admin.main')
 
 @section('main-section')
+@if ($showAlert)
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!</strong> {{$showAlert}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
     <div class="container" style="margin-top:5rem;" >
         <div class="row d-flex align-items-center justify-content-center mb-5">
             <div class="col-md-10 ">

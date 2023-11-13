@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\HotelMaster;
 use App\Models\LocationMaster;
+use App\Models\Booking;
 
 class HotelController extends Controller
 {
@@ -85,6 +86,11 @@ class HotelController extends Controller
         if ($request->has('paybtn')) {
             $showAlert = true;
         }
+        $booking = new Booking;
+        $booking->name = $request['name'];
+        $booking->email = $request['email'];
+        $booking->mobile_number = $request['number'];
+        $booking->save();
         // return redirect()->back()->with('showAlert', $showAlert);
         $data = compact('showAlert', 'hotelId', 'roomId','hotels');
         // return $data;

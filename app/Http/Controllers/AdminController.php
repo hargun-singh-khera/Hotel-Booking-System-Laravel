@@ -24,7 +24,7 @@ class AdminController extends Controller
         $showAlert = false;
         $isUpdate = false;
         $title = "Add Entry";
-        $url = url('/admin/room_master/add');
+        $url = url('/admin/room_master');
         if ($request->has('button')) {
             $showAlert = "New Room has been added successfully.";
         }
@@ -63,10 +63,17 @@ class AdminController extends Controller
     }
 
     public function updateRoom(Request $request, $id) {
+        $rooms = RoomMaster::all();
         $updateRoom = RoomMaster::find($id);
         $updateRoom->room_type = $request['room_type'];
         $updateRoom->save();
-        return redirect(route('admin.room_master'));
+        $isUpdate = true;
+        $showAlert = false;
+        $title = "Add Entry";
+        $url = url('/admin/room_master');
+        $data = compact('rooms', 'title', 'showAlert', 'isUpdate', 'url');
+        // return $data;
+        return redirect(route('admin.room_master'))->with($data);
     }
 
     public function deleteRoom($id) {
@@ -77,7 +84,7 @@ class AdminController extends Controller
         $showAlert = "Room has been deleted successfully.";
         $url = url('/admin/room_master/');
         $isUpdate = false;
-        $title = "Save Entry";
+        $title = "Add Entry";
         $rooms = RoomMaster::all();
         $data = compact('showAlert', 'url', 'isUpdate', 'title', 'rooms');
         return view('admin.room_master')->with($data);
@@ -94,7 +101,7 @@ class AdminController extends Controller
         $location->save();
         $showAlert = false;
         $isUpdate = false;
-        $url = url('/admin/location_master/add');
+        $url = url('/admin/location_master');
         if ($request->has('button')) {
             $showAlert = "New Location has been added successfully.";
         }
@@ -179,8 +186,6 @@ class AdminController extends Controller
         $isUpdate = false;
         $showAlert = false;
         $data = compact('hotels', 'title', 'showAlert', 'url', 'isUpdate', 'locations');
-        // return $data;
-
         return view('admin.hotel_master')->with($data);
     }
 
@@ -243,23 +248,43 @@ class AdminController extends Controller
         return redirect()->back();
     }
     
-    public function showRoomAllotToHotels() {
+    public function showRoomAllotToHotels(Request $request) {
+        $selectedHotelId = $request['selectedHotelId'];
+        $request->session()->put('selectedHotelId', $selectedHotelId);
         $roomToHotels = DB::table('hotel_room_alloteds')
                     ->join('hotel_masters', 'hotel_room_alloteds.hotel_id', 'hotel_masters.hotel_id')
                     ->join('location_masters', 'location_masters.location_id', 'hotel_masters.hotel_id')
                     ->join('room_masters', 'room_masters.room_id', 'hotel_room_alloteds.room_id')
+                    ->where('hotel_room_alloteds.hotel_id','=',$selectedHotelId)
                     ->get();
+
+        
         $rooms = RoomMaster::all();
         $hotels = HotelMaster::all();
-        $data = compact('roomToHotels', 'hotels' ,'rooms');
+        $url = url('/admin/room_allot');
+        $title = "Add Entry";
+        $isUpdate = false;
+        $showAlert = false;
+        // $hotels = HotelMaster::where('hotel_id','!=',$selectedHotelId)->get();
+        // return $hotels;
+        // die;
+        if(session()->has('selectedHotelId')) {
+            $hotel = HotelMaster::where('hotel_id','=',session('selectedHotelId'))->get();
+        }
+
+        $data = compact('roomToHotels', 'hotels' ,'rooms', 'selectedHotelId', 'url', 'title', 'isUpdate', 'showAlert');
+        // echo "<pre>";
+        // print_r($hotels->toArray());
+        // die;
         // return $data;
         return view('admin.room_allot')->with($data);
     }
 
     public function roomAllotToHotel(Request $request) {
         $file = $request->file('image')->getClientOriginalName();
+        $selectedHotelId = $request['hotelId'];
         $hotel = new HotelRoomAlloted;
-        $hotel->hotel_id = $request['hotelname'];
+        $hotel->hotel_id = $selectedHotelId;
         $hotel->room_id = $request['roomtype'];
         $hotel->room_image = $file;
         $hotel->no_of_rooms = $request['noofrooms'];
@@ -269,24 +294,124 @@ class AdminController extends Controller
         return redirect()->back();
     }
 
-    public function showRoomAllotToHotel() {
-        $hotels = HotelRoomAlloted::all();
-        $data = compact('hotels');
-        return view('admin.room_allot')->with($data);
+    public function editRoomAllotToHotel(Request $request, $hotelId, $roomId) {
+        $selectedHotelId = $request['selectedHotelId'];
+        $hotelId = $request['hotelId'];
+        $roomId = $request['roomId'];
+        $isUpdate = false;
+        $roomToHotels = DB::table('hotel_room_alloteds')
+                            ->join('hotel_masters', 'hotel_room_alloteds.hotel_id', 'hotel_masters.hotel_id')
+                            ->join('location_masters', 'location_masters.location_id', 'hotel_masters.hotel_id')
+                            ->join('room_masters', 'room_masters.room_id', 'hotel_room_alloteds.room_id')
+                            ->where('hotel_room_alloteds.hotel_id','=',$hotelId)
+                            ->get();
+        
+        
+        $updateRoomToHotels = DB::table('hotel_room_alloteds')
+                    ->join('hotel_masters', 'hotel_room_alloteds.hotel_id', 'hotel_masters.hotel_id')
+                    ->join('location_masters', 'location_masters.location_id', 'hotel_masters.hotel_id')
+                    ->join('room_masters', 'room_masters.room_id', 'hotel_room_alloteds.room_id')
+                    ->where('hotel_room_alloteds.hotel_id','=',$hotelId)
+                    ->where('hotel_room_alloteds.room_id','=',$roomId)
+                    ->get();
+                    
+        $title = "Save Entry";
+        $rooms = RoomMaster::all();
+        $hotels = HotelMaster::all();
+        $showAlert = false;
+        if(is_null($updateRoomToHotels)) {
+            return redirect('admin.room_allot');
+        }
+        else {
+            if ($request->has('update')) {
+                $isUpdate = true;
+            }
+            $url = url('/admin/room_allot/update') ."/".$hotelId. "/".$roomId;
+            $data = compact('roomToHotels', 'title', 'updateRoomToHotels', 'url', 'rooms', 'hotels', 'selectedHotelId', 'showAlert', 'isUpdate');
+            // return $data;
+            // echo "<pre>";
+            // print_r($data);
+            // die;
+            return view('admin.room_allot')->with($data);
+        }
     }
 
-    public function deleteUser($id) {
-        $user = User::find($id);
-        if(!is_null($user)) {
-            $user->delete();
+    public function updateRoomAllotToHotel(Request $request, $hotelId, $roomId) {
+        $selectedHotelId = $request['selectedHotelId'];
+        // $updatedHotelId = $request['updatedHotelId'];
+        // dd($hotelId);
+        $roomToHotels = HotelRoomAlloted::where('hotel_id', '=', $hotelId)->where('room_id', '=', $roomId)->first();                
+        $roomToHotels->hotel_id = $hotelId;
+        $roomToHotels->room_id = $roomId;
+        $roomToHotels->no_of_rooms = $request['noofrooms'];
+        $roomToHotels->no_of_guests = $request['noofguests'];
+        $roomToHotels->rate_per_night = $request['ratepernight'];
+        $roomToHotels->save();
+        $title = "Add Entry";
+        $isUpdate = false;
+        // $showAlert = false;
+        $rooms = RoomMaster::all();
+        $hotels = HotelMaster::all();
+        
+        $roomToHotels = DB::table('hotel_room_alloteds')
+                            ->join('hotel_masters', 'hotel_room_alloteds.hotel_id', 'hotel_masters.hotel_id')
+                            ->join('location_masters', 'location_masters.location_id', 'hotel_masters.hotel_id')
+                            ->join('room_masters', 'room_masters.room_id', 'hotel_room_alloteds.room_id')
+                            ->where('hotel_room_alloteds.hotel_id','=',$hotelId)
+                            ->get();
+        
+        
+        $updateRoomToHotels = DB::table('hotel_room_alloteds')
+                    ->join('hotel_masters', 'hotel_room_alloteds.hotel_id', 'hotel_masters.hotel_id')
+                    ->join('location_masters', 'location_masters.location_id', 'hotel_masters.hotel_id')
+                    ->join('room_masters', 'room_masters.room_id', 'hotel_room_alloteds.room_id')
+                    ->where('hotel_room_alloteds.hotel_id','=',$hotelId)
+                    ->where('hotel_room_alloteds.room_id','=',$roomId)
+                    ->get();
+        
+        $url = url('/admin/room_allot/update') ."/".$hotelId. "/".$roomId;
+        $data = compact('roomToHotels', 'title', 'updateRoomToHotels', 'url', 'rooms', 'hotels', 'selectedHotelId', 'isUpdate');
+        // return $data;
+        return redirect(route('admin.room_allot'))->with($data);
+    }
+
+    public function deleteRoomAllotToHotel($hotelId, $roomId) {
+        $hotel = HotelRoomALloted::where('hotel_id','=',$hotelId)->where('room_id','=',$roomId)->first();
+        // return $hotel;
+        $showAlert = false;
+        if(!is_null($hotel)) {
+            $hotel->delete();
         }
         return redirect()->back();
     }
 
-    public function showUsers() {
+    public function deleteUser(Request $request, $id) {
+        $user = User::find($id);
+        $showAlert = false;
+        if(!is_null($user)) {
+            if($request->has('delete')) {
+                $showAlert = "User account has been deleted successfully.";
+            }
+            $user->delete();
+        }
         $customers = User::all();
-        $data = compact('customers');
+        $data = compact('user', 'showAlert', 'customers');
         return view('admin.user_master')->with($data);
     }
 
+    public function showUsers() {
+        $customers = User::all();
+        $showAlert = false;
+        $data = compact('customers', 'showAlert');
+        // return $data;
+        return view('admin.user_master')->with($data);
+    }
+
+    public function adminLogin() {
+        return view('admin.login');
+    }
+
+    public function adminDashboard() {
+        return view('admin.dashboard');
+    }
 }

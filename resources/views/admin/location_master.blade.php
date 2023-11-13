@@ -12,6 +12,7 @@
         <div class="col-md-8 ">
             <div class="card shadow p-5 border-0 rounded me-5">
                 <h2 >Manage Locations</h2>
+                {{-- <h6>{{$url}}</h6> --}}
                 <form action="{{$url}}" method="POST">
                     @csrf
                     <div class="mb-3">

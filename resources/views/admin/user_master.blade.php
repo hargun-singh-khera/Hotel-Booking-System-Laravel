@@ -1,6 +1,12 @@
 @extends('admin.main')
 
 @section('main-section')
+@if ($showAlert)
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!</strong> {{$showAlert}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
 <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary ms-2" style="width:76em;">
     
     <div class="container" style="margin-top:5rem;" >
@@ -32,7 +38,7 @@
                                             <td>
                                                 <button class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="delete" id="delete">Delete</button>
                                             </td>
-                                            </form>
+                                        </form>
                                         @php
                                             $id++;
                                         @endphp
